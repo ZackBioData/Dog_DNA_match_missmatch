@@ -1,10 +1,14 @@
-from Bio import SeqIO
 import re
+from Bio import SeqIO
+
 
 def extract_breed(record):
     """pull breed name out of the fasta header tags, fall back to accession if not found"""
     match = re.search(r'\[breed=([^\]]+)\]', record.description)
-    return match.group(1) if match else record.id
+    if match:
+        return match.group(1).strip().title()
+    return record.id
+
 
 def load_sequence_database(database_fasta_path):
     """
@@ -13,7 +17,7 @@ def load_sequence_database(database_fasta_path):
     """
     sequence_database = {}
     for sequence_record in SeqIO.parse(database_fasta_path, "fasta"):
-        sequence_database[extract_breed(sequence_record)] = sequence_record
+        sequence_database[sequence_record.id] = sequence_record
     if not sequence_database:
         raise ValueError(f"No sequences found in database file:")
     print(f"Loaded {len(sequence_database)} sequences from database.")

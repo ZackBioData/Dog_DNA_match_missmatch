@@ -1,10 +1,10 @@
 """
-compute_similarity.py
 compute pairwise alignment scores between the mystery sequence and all db sequences.
 all sequences are 16,735 bp so no normalisation needed — raw score is fine.
 https://biopython.org/docs/1.76/api/Bio.Align.html
 """
 from Bio.Align import PairwiseAligner
+from src.load_fasta import extract_breed
 
 
 def create_aligner():
@@ -21,22 +21,23 @@ def create_aligner():
 def find_best_match(mystery_record, sequence_database):
     """
     align and score mystery sequence against every sequence in the database.
-    returns results decending from best match down.
+    returns results descending from best match down.
     mystery_record: SeqRecord of the mystery sequence
-    sequence_database: dict of {breed_name: SeqRecord}
+    sequence_database: dict of {accession_id: SeqRecord}
     list of dicts sorted by score descending
     """
     aligner = create_aligner()
     results = []
 
-    print(f"\nAligning against database sequences")
+    print(f"\nAligning against {len(sequence_database)} database sequences")
 
-    for breed_name, db_record in sequence_database.items():
+    for accession, db_record in sequence_database.items():
+        breed_name = extract_breed(db_record)
         score = aligner.score(str(mystery_record.seq), str(db_record.seq))
 
         results.append({
             "breed": breed_name,
-            "ID": db_record.id,
+            "ID": accession,
             "score": score,
         })
 
