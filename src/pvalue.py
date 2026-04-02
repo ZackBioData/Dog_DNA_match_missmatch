@@ -6,7 +6,7 @@ p-value = proportion of shuffled scores >= real score.
 p=0.0 means none of the random shuffles matched as well — significant result.
 """
 import numpy as np
-from src.MSA_score import create_aligner
+from src.sequence_alignment import create_aligner
 
 
 def shuffle_sequence(sequence_string):
@@ -25,7 +25,7 @@ def compute_pvalue(mystery_record, best_match_record, real_score, n_shuffles=50)
     mystery_record: SeqRecord of the mystery sequence
     best_match_record: SeqRecord of the best matching db sequence
     real_score: alignment score from find_best_match
-    n_shuffles: 50 is plenty — result is obvious with a score this high
+    n_shuffles: 50
 
     returns p-value and the full null distribution
     """
